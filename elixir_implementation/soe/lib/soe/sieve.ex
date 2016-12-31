@@ -9,13 +9,21 @@ defmodule Soe.Sieve do
     GenServer.start_link(__MODULE__, num, name: name)
   end
 
-  # SERVER CALLBACKS
-  def handle_call({:is_prime?, number}, _from, prime)
-    when rem(number,prime) != 0 do
-    {:reply, :possible_prime, prime}
+  def handle_cast({:is_prime?, param}, prime)
+  when (not is_integer(param)) do
+    {:noreply, prime}
   end
 
-  def handle_call({:is_prime?, number}, _from, prime) do
-    {:reply, :not_prime, prime}
+  # SERVER CALLBACKS
+  def handle_cast({:is_prime?, number}, prime)
+  when rem(number,prime) != 0 do
+    IO.inspect Node.self
+    # send to next sieve, if any
+    {:noreply, prime}
+  end
+
+  # SERVER CALLBACKS
+  def handle_cast({:is_prime?, _num}, prime) do
+    {:noreply, prime}
   end
 end
