@@ -6,7 +6,8 @@ defmodule Soe do
 
     # Define workers and child supervisors to be supervised
     children = [
-      worker(Soe.SieveCreator, [])
+      worker(Soe.SieveCreator, []),
+      worker(Soe.Receiver, []),
     ]
 
     opts = [strategy: :one_for_one, name: Soe.Supervisor]
