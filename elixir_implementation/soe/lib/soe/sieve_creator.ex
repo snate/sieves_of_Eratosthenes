@@ -6,7 +6,7 @@ defmodule Soe.SieveCreator do
   Starts the sieve creator.
   """
   def start_link do
-    GenServer.start_link(__MODULE__, %{}, name: :SieveCreator)
+    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
   @doc """
