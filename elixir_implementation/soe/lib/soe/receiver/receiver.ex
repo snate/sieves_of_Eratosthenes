@@ -6,14 +6,14 @@ defmodule Soe.Receiver do
   """
   def start_link do
     {:ok, pid} = Soe.Receiver.Stash.start_link
-    GenServer.start_link(__MODULE__, pid, name: __MODULE__)
+    GenServer.start_link(__MODULE__, pid, name: :Receiver)
   end
 
   @doc """
   Receive a request to analyze number `num from sieve with id `id.
   """
   def next_number(id, num) do
-    GenServer.call(__MODULE__,{:next_number, [id, num]})
+    GenServer.call :Receiver, {:next_number, [id, num]}
   end
 
   # SERVER CALLBACKS
@@ -24,22 +24,24 @@ defmodule Soe.Receiver do
 
   def handle_call({:next_number, [id, num]}, _from, stash) do
     # create new sieve
+    IO.inspect "HEEEI"
     max_id = Soe.Receiver.Stash.get
-    IO.puts max_id
-    process_next_number(id, num, max_id)
+    process_next_number id, num, max_id
     {:reply, :done, stash}
   end
 
   defp process_next_number(id, num, max_id)
     when id > max_id do
     # create new sieve
+    IO.inspect "creation of #{num}"
     Soe.SieveCreator.create_sieve id+1, num
     Soe.Receiver.Stash.update (id+1)
   end
 
   defp process_next_number(id, num, _max_id) do
     # forward to next sieve
+    IO.inspect "forwarding to sieve with possible prime #{num}"
     next_sieve = String.to_atom("Sieve" <> Integer.to_string(id + 1))
-    GenServer.cast(next_sieve, {:is_prime?, num})
+    GenServer.cast next_sieve, {:is_prime?, num}
   end
 end

@@ -19,5 +19,5 @@ hosts_line = for line <- lines_of_file,
                     line
              end |> Enum.fetch!(0) |> String.trim
 no_of_hosts = String.split(hosts_line, " ") |> List.last |> String.to_integer
-IO.inspect no_of_hosts
+IO.inspect "Starting " <> Integer.to_string(no_of_hosts) <> " nodes..."
 Run.start_host no_of_hosts-1

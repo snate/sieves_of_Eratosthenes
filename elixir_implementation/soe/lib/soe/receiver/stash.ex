@@ -5,7 +5,7 @@ defmodule Soe.Receiver.Stash do
   Starts the receiver's stash.
   """
   def start_link do
-    GenServer.start_link(__MODULE__, 0, name: __MODULE__)
+    GenServer.start_link(__MODULE__, -1, name: __MODULE__)
   end
 
   @doc """

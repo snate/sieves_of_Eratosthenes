@@ -6,14 +6,14 @@ defmodule Soe.SieveCreator do
   Starts the sieve creator.
   """
   def start_link do
-    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+    GenServer.start_link(__MODULE__, %{}, name: :SieveCreator)
   end
 
   @doc """
   Creates a sieve with given `id and `number.
   """
   def create_sieve(id, num) do
-    GenServer.call(__MODULE__,{:new_sieve, [id, num]})
+    GenServer.call(:SieveCreator, {:new_sieve, [id, num]})
   end
 
   # SERVER CALLBACKS
@@ -29,7 +29,6 @@ defmodule Soe.SieveCreator do
     end
   end
 
-  # SERVER CALLBACKS
   def handle_call({:new_sieve, _list}, _from, map) do
     {:reply, :bad_argument, map}
   end

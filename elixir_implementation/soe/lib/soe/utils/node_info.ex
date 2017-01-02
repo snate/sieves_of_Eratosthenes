@@ -1,4 +1,4 @@
-defmodule Soe.Utils.Node_Info do
+defmodule Soe.Utils.NodeInfo do
 
   @doc """
   Returns the hash of the node
@@ -13,6 +13,7 @@ defmodule Soe.Utils.Node_Info do
     |> Regex.named_captures(Atom.to_string(node()))
     |> map_with_zero
     |> Map.get("number")
+    |> String.to_integer
   end
 
   defp map_with_zero(nil) do
@@ -26,5 +27,21 @@ defmodule Soe.Utils.Node_Info do
 
   defp null_value do
     -1
+  end
+
+  @doc """
+  Returns the hash of the node
+  """
+  def compose_node_name(num)
+  when is_integer(num) do
+    compose_node_name Integer.to_string(num)
+  end
+
+  def compose_node_name(num) do
+    "SoE" <> num <> "@127.0.0.1"
+  end
+
+  def endpoint_address do
+    {:Server, :"endpoint@127.0.0.1"}
   end
 end
