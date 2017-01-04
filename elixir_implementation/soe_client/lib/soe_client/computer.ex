@@ -54,6 +54,8 @@ defmodule SoeClient.Computer do
 
   def handle_cast({:answer, {_num, :not_prime}}, 1) do
     SoeClient.PrimesList.get
+    |> Enum.sort(&(&1 <= &2))
+    |> IO.inspect
     {:noreply, 0}
   end
 
