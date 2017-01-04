@@ -24,7 +24,6 @@ defmodule Soe.Receiver do
 
   def handle_call({:next_number, [id, num]}, _from, stash) do
     # create new sieve
-    IO.inspect "HEEEI"
     max_id = Soe.Receiver.Stash.get
     process_next_number id, num, max_id
     {:reply, :done, stash}
@@ -33,14 +32,12 @@ defmodule Soe.Receiver do
   defp process_next_number(id, num, max_id)
     when id > max_id do
     # create new sieve
-    IO.inspect "creation of #{num}"
     Soe.SieveCreator.create_sieve id+1, num
     Soe.Receiver.Stash.update (id+1)
   end
 
   defp process_next_number(id, num, _max_id) do
     # forward to next sieve
-    IO.inspect "forwarding to sieve with possible prime #{num}"
     next_sieve = String.to_atom("Sieve" <> Integer.to_string(id + 1))
     GenServer.cast next_sieve, {:is_prime?, num}
   end

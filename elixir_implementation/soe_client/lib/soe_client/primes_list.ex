@@ -9,7 +9,7 @@ defmodule SoeClient.PrimesList do
   end
 
   @doc """
-  Get the list.
+  Get the primes' list.
   """
   def get do
     GenServer.call __MODULE__, {:get, []}

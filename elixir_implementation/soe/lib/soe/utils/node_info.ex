@@ -1,7 +1,7 @@
 defmodule Soe.Utils.NodeInfo do
 
   @doc """
-  Returns the hash of the node
+  Returns the hash of the node.
   """
   def hash
   when node == :nonode@nohost do
@@ -30,7 +30,7 @@ defmodule Soe.Utils.NodeInfo do
   end
 
   @doc """
-  Returns the hash of the node
+  Returns the full name of the next sieve, given its number.
   """
   def compose_node_name(num)
   when is_integer(num) do
@@ -41,6 +41,9 @@ defmodule Soe.Utils.NodeInfo do
     "SoE" <> num <> "@127.0.0.1"
   end
 
+  @doc """
+  Returns the callable address of the endpoint.
+  """
   def endpoint_address do
     {:Server, :"endpoint@127.0.0.1"}
   end

@@ -19,7 +19,6 @@ defmodule Soe.SieveCreator do
   # SERVER CALLBACKS
   def handle_call({:new_sieve, [id, num]}, _from, ids_map)
     when is_integer(id) and is_integer(num) do
-    IO.inspect ids_map
     if Map.has_key?(ids_map, id) do
       {:reply, :already_present, ids_map}
     else

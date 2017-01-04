@@ -6,10 +6,12 @@ defmodule Soe.Sieve do
   """
   def start_link(id, num) do
     name = String.to_atom("Sieve" <> Integer.to_string(id))
-    IO.inspect "Creating sieve #{id}, #{num}"
     GenServer.call(endpoint, {:answer_for, {num, :prime}})
     GenServer.start_link(__MODULE__, [id, num], name: name)
   end
+
+  # no module APIs are provided since sieves are called directly by casting
+  # requests with GenServer
 
   # SERVER CALLBACKS
   def handle_cast({:is_prime?, param}, state)
@@ -30,7 +32,6 @@ defmodule Soe.Sieve do
     |> rem(no_hosts)
     |> Soe.Utils.NodeInfo.compose_node_name
     |> String.to_atom
-    IO.inspect "{#{soe_receiver}, #{next_node}} and number is #{number}"
     GenServer.call({soe_receiver, next_node}, {:next_number, [id, number]})
     {:noreply, [id, prime]}
   end

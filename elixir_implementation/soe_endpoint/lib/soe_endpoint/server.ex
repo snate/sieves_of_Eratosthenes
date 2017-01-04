@@ -19,8 +19,6 @@ defmodule SoeEndpoint.Server do
     requests_for_num = Map.get requests, num, []
     give_answer_to requests_for_num, num, response
     new_requests = Map.drop requests, [num]
-    IO.inspect "Answer has arrived for #{num}"
-    IO.inspect new_requests
     {:reply, :ok, new_requests}
   end
 
@@ -29,7 +27,6 @@ defmodule SoeEndpoint.Server do
 
   defp give_answer_to([asker | remainder], num, response) do
     GenServer.cast asker, {:answer, {num, response}}
-    IO.inspect "HELLO WORLD"
     give_answer_to remainder, num, response
   end
 
