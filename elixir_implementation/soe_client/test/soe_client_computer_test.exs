@@ -13,7 +13,7 @@ defmodule SoeClientComputerTest do
       GenServer.call :ReceiverMock, :get
     end
 
-    def handle_call({:next_number, {id, new}}, _from, old) do
+    def handle_call({:next_number, {_id, new}}, _from, old) do
       assert new > old
       {:reply, :mock_reply, new}
     end
