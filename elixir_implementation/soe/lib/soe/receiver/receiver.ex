@@ -17,12 +17,12 @@ defmodule Soe.Receiver do
   end
 
   # SERVER CALLBACKS
-  def handle_call({:next_number, [id, num]}, _from, stash)
+  def handle_call({:next_number, {id, num}}, _from, stash)
     when (not is_integer(id)) or (not is_integer(num)) do
     {:reply, :bad_argument, stash}
   end
 
-  def handle_call({:next_number, [id, num]}, _from, stash) do
+  def handle_call({:next_number, {id, num}}, _from, stash) do
     # create new sieve
     max_id = Soe.Receiver.Stash.get
     process_next_number id, num, max_id

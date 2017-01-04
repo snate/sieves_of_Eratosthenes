@@ -7,7 +7,7 @@ defmodule Soe.Sieve do
   def start_link(id, num) do
     name = String.to_atom("Sieve" <> Integer.to_string(id))
     GenServer.call(endpoint, {:answer_for, {num, :prime}})
-    GenServer.start_link(__MODULE__, [id, num], name: name)
+    GenServer.start_link(__MODULE__, {id, num}, name: name)
   end
 
   # no module APIs are provided since sieves are called directly by casting
@@ -19,21 +19,21 @@ defmodule Soe.Sieve do
     {:noreply, state}
   end
 
-  def handle_cast({:is_prime?, num}, [id, prime])
+  def handle_cast({:is_prime?, num}, {id, prime})
   when num == prime do
     GenServer.call(endpoint, {:answer_for, {num, :prime}})
-    {:noreply, [id, prime]}
+    {:noreply, {id, prime}}
   end
 
-  def handle_cast({:is_prime?, number}, [id, prime])
+  def handle_cast({:is_prime?, number}, {id, prime})
   when rem(number,prime) != 0 do
     no_hosts = Application.get_env(:soe,:number_of_hosts)
     next_node = Soe.Utils.NodeInfo.hash + 1
     |> rem(no_hosts)
     |> Soe.Utils.NodeInfo.compose_node_name
     |> String.to_atom
-    GenServer.call({soe_receiver, next_node}, {:next_number, [id, number]})
-    {:noreply, [id, prime]}
+    GenServer.call({soe_receiver, next_node}, {:next_number, {id, number}})
+    {:noreply, {id, prime}}
   end
 
   def handle_cast({:is_prime?, num}, state) do
