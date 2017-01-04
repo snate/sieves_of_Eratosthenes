@@ -66,6 +66,9 @@ defmodule SoeClient.Computer do
     {:Computer, node()}
   end
 
+  # backend and endpoint are not hard-coded but set up in the config files
+  # thus it is easier to write tests for Computer using mock modules
+  # that act like backend and endpoint
   defp backend do
     Application.get_env :soe_client, :backend_address
   end
