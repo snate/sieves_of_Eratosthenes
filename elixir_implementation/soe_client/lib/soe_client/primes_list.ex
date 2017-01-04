@@ -18,6 +18,9 @@ defmodule SoeClient.PrimesList do
   @doc """
   Append a number.
   """
+  def append(thing) when not is_integer(thing) do
+  end
+
   def append(num) do
     GenServer.call __MODULE__, {:append, num}
   end
