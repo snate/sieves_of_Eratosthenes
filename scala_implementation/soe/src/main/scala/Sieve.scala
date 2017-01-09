@@ -39,16 +39,12 @@ class Sieve(prime : Integer, id : Integer) extends Actor {
 
   def receive = {
     case IsPrime(number) =>
-      if(number ==  prime) {
+      if(number ==  prime)
         sendToEndpoint(AnswerFor(number, true))
-        println(s"$number PRIME")
-      } else if(number % prime != 0) {
+      else if(number % prime != 0)
         forwardToNextSieve(CheckPrimalityWithId(number,id))
-        println(s"$number POSSIBLE PRIME")
-      } else {
+      else
         sendToEndpoint(AnswerFor(number, false))
-        println(s"$number NOT PRIME")
-      }
   }
 
   private def sendToEndpoint(msg : Any) = {

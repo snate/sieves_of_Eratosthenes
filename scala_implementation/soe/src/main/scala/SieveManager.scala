@@ -29,8 +29,6 @@ class SieveManager extends Actor {
       val name  = SievePrefix + id.toString
       val sieve = refs.getOrElseUpdate (id, context.actorOf(props,name))
       sender ! sieve
-      // TODO: Remove the following line
-      println(s"Returned sieve $name that has number $number")
   }
 
 }

@@ -35,7 +35,7 @@ object SoeApp extends App {
       val sys = ActorSystem(s"$beSys$i", configs)
       sys.actorOf(Props[Soe], beName)
     }
-    println(s"System started")
+    println(s"Backend started")
   }
 
 }

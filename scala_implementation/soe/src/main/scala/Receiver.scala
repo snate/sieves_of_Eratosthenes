@@ -26,8 +26,6 @@ class Receiver(manager : ActorRef) extends Actor {
       val sieve = Await.result(sieveReq, timeout.duration)
                        .asInstanceOf[ActorRef]
       sieve ! IsPrime(number)
-      // TODO: Remove the following line
-      println(s"Received $number from sieve with id $id")
   }
 
 }

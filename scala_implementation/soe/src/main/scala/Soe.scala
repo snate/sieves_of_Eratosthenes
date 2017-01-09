@@ -36,12 +36,11 @@ class Soe extends Actor {
       receiver ! NextNumber(0,num)
 
     case CheckPrimalityWithId(num : Integer, id : Integer) =>
-      println("Hello")
       val receiver = context.actorSelection("Receiver")
       sender ! "Done"
       receiver ! NextNumber(id,num)
 
-    case _ => println("YUCK")
+    case _ =>
   }
 
 }
