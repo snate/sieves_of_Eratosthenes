@@ -1,10 +1,19 @@
 package soeclient
 
-import akka.actor. { Actor, ActorPath }
+import akka.actor. { Actor, ActorPath, ActorRef }
+import akka.pattern.{ ask }
+import akka.util.{ Timeout }
+
+import scala.concurrent._
+import scala.concurrent.duration._
+import scala.util.{Success, Failure}
+
+import ExecutionContext.Implicits.global
 
 import com.typesafe.config.ConfigFactory
 
 import types.Messages._
+import PrimesList. { Get, Insert }
 
 object Computer {
 
@@ -21,36 +30,44 @@ object Computer {
   lazy val endpSys    = appConfig.getString("client-remote.end-sys")
 
   case class CheckPrimalityUpTo(number : Integer)
+  case class AskToBackendFor(number : Integer)
+
+  implicit val timeout = Timeout(5.second)
 
 }
 
-class Computer extends Actor {
+class Computer(resultList : ActorRef) extends Actor {
   import Computer._
 
   var count : Integer = 0
 
   def receive = {
     case CheckPrimalityUpTo(limit) =>
-      for( n <- 2 to limit) {
+      for( n <- 2 to limit )
         registerForAnswer(n)
-        askToBackend(n)
-      }
+      count = limit - 1
+    case AskToBackendFor(n) =>
+      askToBackend(n)
     case AnswerFor(number, isPrime) =>
-      isPrime match {
-        case true  => println(s"Oh, so $number is indeed prime")
-        case false => println(s"Well, $number is not prime")
-      }
+      count = count - 1
+      if(isPrime)
+        resultList ! Insert(number)
+      if(count == 0)
+        printResult
   }
 
-  private def registerForAnswer(num : Integer) = {
+  private def registerForAnswer(num : Integer) : Unit = {
     val endPath : ActorPath = address(endpSys, endpHost, endpPort, soeEndp)
     val endpoint = context.actorSelection(endPath)
-    endpoint ! AskFor(num)
+    val ackRequest = endpoint ? AskFor(num)
+    ackRequest onComplete {
+      case Success(_) => self ! AskToBackendFor(num)
+      case Failure(_) => registerForAnswer(num)
+    }
   }
 
   private def askToBackend(num : Integer) = {
     val soePath : ActorPath = address(soeSys, soeHost, soePort, soeBackend)
-    println(soePath)
     val soe = context.actorSelection(soePath)
     soe ! CheckPrimality(num)
   }
@@ -59,6 +76,13 @@ class Computer extends Actor {
                       name : String) : ActorPath = {
     val path = s"akka.tcp://$sys@$host:$port/user/$name"
     return ActorPath.fromString(path)
+  }
+
+  private def printResult = {
+    val resultReq = resultList ? Get
+    val result = Await.result(resultReq, timeout.duration)
+                     .asInstanceOf[List[Integer]]
+    println(result.sorted)
   }
 
 }
