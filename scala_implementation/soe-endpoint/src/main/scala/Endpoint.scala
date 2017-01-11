@@ -1,4 +1,4 @@
-package soe.endpoint
+package soeendpoint
 
 import akka.actor.{ Actor, ActorSelection }
 import akka.pattern.{ ask }

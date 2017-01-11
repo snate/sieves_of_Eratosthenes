@@ -1,4 +1,4 @@
-package soe.endpoint
+package soeendpoint
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
 
