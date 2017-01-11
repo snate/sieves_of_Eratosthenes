@@ -13,7 +13,7 @@ defmodule SoeClient.Computer do
   Compute prime numbers up to `n.
   """
   def compute_up_to(n) do
-    GenServer.call :Computer, {:compute, n}
+    GenServer.call :Computer, {:compute, n}, 400000
   end
 
   # SERVER CALLBACKS
