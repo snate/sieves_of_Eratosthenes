@@ -40,9 +40,11 @@ class Computer(resultList : ActorRef) extends Actor {
   import Computer._
 
   var count : Integer = 0
+  var start_time : Long = 0
 
   def receive = {
     case CheckPrimalityUpTo(limit) =>
+      start_time = System.currentTimeMillis
       for( n <- 2 to limit )
         registerForAnswer(n)
       count = limit - 1
@@ -79,6 +81,9 @@ class Computer(resultList : ActorRef) extends Actor {
   }
 
   private def printResult = {
+    val endTime = System.currentTimeMillis
+    val elapsedSecs = (endTime - start_time) / 1000.0
+    println(s"It took $elapsedSecs seconds.")
     val resultReq = resultList ? Get
     val result = Await.result(resultReq, timeout.duration)
                      .asInstanceOf[List[Integer]]
