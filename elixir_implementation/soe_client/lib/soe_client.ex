@@ -10,6 +10,7 @@ defmodule SoeClient do
     children = [
       worker(SoeClient.PrimesList, []),
       worker(SoeClient.Computer, []),
+      worker(SoeClient.Timer, []),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

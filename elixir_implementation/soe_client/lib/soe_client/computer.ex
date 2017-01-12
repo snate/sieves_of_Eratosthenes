@@ -18,6 +18,7 @@ defmodule SoeClient.Computer do
 
   # SERVER CALLBACKS
   def handle_call({:compute, n}, _from, 0) do
+    SoeClient.Timer.set :os.system_time(:microsecond)
     how_many = get_primes_up_to 2, n, 0
     {:reply, :computing, how_many}
   end
@@ -40,6 +41,7 @@ defmodule SoeClient.Computer do
   end
 
   def handle_cast({:answer, {num, :prime}}, 1) do
+    SoeClient.Timer.lap :os.system_time(:microsecond)
     [ num | SoeClient.PrimesList.get ]
     |> Enum.sort(&(&1 <= &2))
     |> IO.inspect
