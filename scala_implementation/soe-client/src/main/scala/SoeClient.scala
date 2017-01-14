@@ -28,7 +28,8 @@ object SoeClient extends App {
     val configs = configsForClientWithPort(port)
     val sys  = ActorSystem("SoeClient", configs)
     val list = sys.actorOf(Props[PrimesList], "Result")
-    val cli  = sys.actorOf(Props(classOf[Computer], list), "Computer")
+    val pp = new PathProvider()
+    val cli  = sys.actorOf(Props(classOf[Computer], list, pp), "Computer")
     cli ! CheckPrimalityUpTo(up_to)
   }
 

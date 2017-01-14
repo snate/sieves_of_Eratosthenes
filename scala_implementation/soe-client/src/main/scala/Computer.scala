@@ -19,16 +19,6 @@ object Computer {
 
   lazy val appConfig  = ConfigFactory.load()
 
-  lazy val soeBackend = appConfig.getString("client-remote.soe-backend")
-  lazy val soeHost    = appConfig.getString("client-remote.soe-host")
-  lazy val soePort    = appConfig.getInt("client-remote.soe-port")
-  lazy val soeSys     = appConfig.getString("client-remote.soe-sys")
-
-  lazy val soeEndp    = appConfig.getString("client-remote.end-name")
-  lazy val endpHost   = appConfig.getString("client-remote.end-host")
-  lazy val endpPort   = appConfig.getInt("client-remote.end-port")
-  lazy val endpSys    = appConfig.getString("client-remote.end-sys")
-
   case class CheckPrimalityUpTo(number : Integer)
   case class AskToBackendFor(number : Integer)
 
@@ -36,7 +26,7 @@ object Computer {
 
 }
 
-class Computer(resultList : ActorRef) extends Actor {
+class Computer(resultList : ActorRef, pathProv : PathProvider) extends Actor {
   import Computer._
 
   var count : Integer = 0
@@ -59,7 +49,7 @@ class Computer(resultList : ActorRef) extends Actor {
   }
 
   private def registerForAnswer(num : Integer) : Unit = {
-    val endPath : ActorPath = address(endpSys, endpHost, endpPort, soeEndp)
+    val endPath : String = pathProv.pathToEndpoint
     val endpoint = context.actorSelection(endPath)
     val ackRequest = endpoint ? AskFor(num)
     ackRequest onComplete {
@@ -69,15 +59,9 @@ class Computer(resultList : ActorRef) extends Actor {
   }
 
   private def askToBackend(num : Integer) = {
-    val soePath : ActorPath = address(soeSys, soeHost, soePort, soeBackend)
+    val soePath : String = pathProv.pathToBackend
     val soe = context.actorSelection(soePath)
     soe ! CheckPrimality(num)
-  }
-
-  private def address(sys : String, host : String, port : Integer,
-                      name : String) : ActorPath = {
-    val path = s"akka.tcp://$sys@$host:$port/user/$name"
-    return ActorPath.fromString(path)
   }
 
   private def printResult = {
