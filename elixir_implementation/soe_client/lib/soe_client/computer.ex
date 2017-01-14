@@ -34,9 +34,9 @@ defmodule SoeClient.Computer do
 
   defp get_primes_up_to(n, limit, cnt) do
     # register for answer
-    GenServer.call endpoint, {:ask_for, {n, me}}
+    GenServer.call endpoint(), {:ask_for, {n, me()}}
     # find out if n is prime
-    GenServer.call backend, {:next_number, {0, n}}
+    GenServer.call backend(), {:next_number, {0, n}}
     get_primes_up_to n+1, limit, cnt+1
   end
 
