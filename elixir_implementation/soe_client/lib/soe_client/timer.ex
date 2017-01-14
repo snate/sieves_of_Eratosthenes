@@ -17,6 +17,8 @@ defmodule SoeClient.Timer do
 
   @doc """
   Stops the timer.
+  So you can get anytime the elapsed time by invoking
+  >> SoeClient.Timer.lap :os.system_time(:microsecond)
   """
   def lap(time) do
     GenServer.call __MODULE__, {:lap, time}
@@ -31,8 +33,8 @@ defmodule SoeClient.Timer do
   def handle_call({:lap, end_time}, _from, start_time) do
     # I assume that both end_time and start_time are in us.
     lap_time = (end_time - start_time) / (1000 * 1000)
-    IO.puts "It took #{lap_time} seconds."
-    {:reply, :lap_printed, start_time}
+    IO.inspect "It took #{lap_time} seconds."
+    {:reply, lap_time, start_time}
   end
 
 end
