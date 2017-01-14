@@ -55,6 +55,7 @@ defmodule SoeClient.Computer do
   end
 
   def handle_cast({:answer, {_num, :not_prime}}, 1) do
+    SoeClient.Timer.lap :os.system_time(:microsecond)
     SoeClient.PrimesList.get
     |> Enum.sort(&(&1 <= &2))
     |> IO.inspect
