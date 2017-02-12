@@ -1,2 +1,2 @@
 # sieves_of_Eratosthenes
-Different implementations for the well-known "Sieve of Eratosthenes" problem
+Different implementations for the well-known "Sieve of Eratosthenes" algorithm
